@@ -1,14 +1,17 @@
-# sysinfo - A simple system information tool for WebOS
+# author: nakildias
+# release_date: 23/08/2025
+# last_updated: 23/08/2025
+# requires_sudo: false
+# version: 1.0.1
+# size: 1KB
 
-# The 'user' and 'session' objects are passed in from the terminal's 
-# execution environment when the command is run.
+# sysinfo - A simple system information tool for WebOS
 
 try:
     username = user.username
     is_admin_status = "Administrator" if user.is_admin else "Standard User"
     user_home = session.get('user_home', f'home/{username}').replace('\\', '/')
 
-    # A simple ASCII logo for WebOS
     art = [
         "    _______________",
         "   /  ________   /|",
@@ -22,27 +25,23 @@ try:
         "|__________|",
     ]
 
-    # Combine art and info side-by-side
-    output_lines = []
     info = [
         "",
         f"{username} @ WebOS",
         "-----------------",
-        f"OS: WebOS",
+        f"OS: WebOS v1.0",
         f"Home: /{user_home}",
         f"Privileges: {is_admin_status}",
         ""
     ]
 
+    output_lines = []
     max_lines = max(len(art), len(info))
     for i in range(max_lines):
         art_line = art[i] if i < len(art) else " " * 18
         info_line = info[i] if i < len(info) else ""
         output_lines.append(f"{art_line}   {info_line}")
 
-
-    # The script must place its return value in a 'response' dictionary.
-    # This dictionary should contain the 'output' to be printed to the terminal.
     response = {
         'output': "\n".join(output_lines),
         'is_error': False
