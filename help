@@ -1,0 +1,29 @@
+# author: nakildias
+# version: 1.0.0
+# requires_sudo: False
+# size: 2KB
+# release_date: 2024-06-25
+# last_updated: 2024-06-25
+
+def main():
+    print("""WebOS Terminal, version 1.0.0
+Built-in commands:
+  ls              List directory contents
+  cd [dir]        Change the current directory
+  mkdir [dir]     Create a new directory
+  rm [file]       Remove a file or directory
+  mv [src] [dst]  Move or rename a file or directory
+  cp [src] [dst]  Copy a file or directory
+  cat             Utility for displaying the contents of files
+  wget [url]      Download a file from a URL
+  help            Show this help message
+  clear           Clear the terminal screen
+
+Admin commands (require sudo for system-wide changes):
+  sudo pkg ...    Manage third-party packages
+  sudo rm ...     Remove files/directories outside your home
+  sudo mv ...     Move files/directories outside your home
+  sudo cp ...     Copy files/directories outside your home""")
+
+if __name__ == '__main__':
+    main()

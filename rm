@@ -1,0 +1,65 @@
+# author: nakildias
+# version: 1.0.0
+# requires_sudo: False
+# size: 2KB
+# release_date: 2024-06-25
+# last_updated: 2024-06-25
+
+import os
+import json
+import sys
+import shutil
+
+def get_safe_path(req_path, user_home):
+    bin_dir = os.path.dirname(os.path.abspath(__file__))
+    FILESYSTEM_ROOT = os.path.abspath(os.path.join(bin_dir, '..'))
+    safe_base = FILESYSTEM_ROOT
+    full_path = os.path.abspath(os.path.join(safe_base, req_path.lstrip('/\\')))
+    if not full_path.startswith(safe_base):
+        return None
+    return full_path
+
+def main():
+    context_str = os.environ.get('WEBOS_CONTEXT')
+    if not context_str:
+        print("Error: Script must be run within WebOS.", file=sys.stderr)
+        sys.exit(1)
+
+    context = json.loads(context_str)
+    args = context.get('args', [])
+    cwd = context.get('cwd', '/')
+    user_home = os.path.join('/home', context['user']['username'])
+
+    options = [arg for arg in args if arg.startswith('-')]
+    targets = [arg for arg in args if not arg.startswith('-')]
+    recursive = '-r' in options or '-rf' in options or '-fr' in options
+    force = '-f' in options or '-rf' in options or '-fr' in options
+
+    if not targets:
+        print("rm: missing operand", file=sys.stderr)
+        sys.exit(1)
+
+    for target in targets:
+        target_path_server = get_safe_path(os.path.join(cwd, target), user_home)
+        if not target_path_server:
+             if not force:
+                print(f"rm: cannot remove '{target}': No such file or directory", file=sys.stderr)
+             continue
+        if os.path.isdir(target_path_server):
+            if not recursive:
+                print(f"rm: cannot remove '{target}': Is a directory", file=sys.stderr)
+            else:
+                try:
+                    shutil.rmtree(target_path_server)
+                except Exception as e:
+                    print(f"rm: error removing '{target}': {e}", file=sys.stderr)
+        elif os.path.exists(target_path_server):
+            try:
+                os.remove(target_path_server)
+            except Exception as e:
+                print(f"rm: error removing '{target}': {e}", file=sys.stderr)
+        elif not force:
+            print(f"rm: cannot remove '{target}': No such file or directory", file=sys.stderr)
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,59 @@
+# author: nakildias
+# version: 1.0.0
+# requires_sudo: False
+# size: 2KB
+# release_date: 2024-06-25
+# last_updated: 2024-06-25
+
+import os
+import json
+import sys
+
+def get_safe_path(req_path, user_home):
+    """
+    A simplified safe path function for external commands.
+    This needs to be kept in sync with the one in app.py.
+    """
+    # In a real scenario, FILESYSTEM_ROOT would be passed in context or configured.
+    # For now, we determine it based on the script's location.
+    bin_dir = os.path.dirname(os.path.abspath(__file__))
+    FILESYSTEM_ROOT = os.path.abspath(os.path.join(bin_dir, '..'))
+    safe_base = FILESYSTEM_ROOT
+    full_path = os.path.abspath(os.path.join(safe_base, req_path.lstrip('/\\')))
+    if not full_path.startswith(safe_base):
+        return None
+    return full_path
+
+def main():
+    context_str = os.environ.get('WEBOS_CONTEXT')
+    if not context_str:
+        print("Error: Script must be run within WebOS.", file=sys.stderr)
+        sys.exit(1)
+
+    context = json.loads(context_str)
+    args = context.get('args', [])
+    cwd = context.get('cwd', '/')
+    user_home = os.path.join('/home', context['user']['username'])
+
+
+    if not args:
+        print("cat: missing file operand", file=sys.stderr)
+        sys.exit(1)
+
+    file_path = args[0]
+    target_path = os.path.normpath(os.path.join(cwd, file_path))
+    target_path_server = get_safe_path(target_path, user_home)
+
+    if not target_path_server or not os.path.isfile(target_path_server):
+        print(f"cat: {file_path}: No such file or directory", file=sys.stderr)
+        sys.exit(1)
+
+    try:
+        with open(target_path_server, 'r', encoding='utf-8', errors='ignore') as f:
+            print(f.read())
+    except Exception as e:
+        print(f"cat: error reading file: {e}", file=sys.stderr)
+        sys.exit(1)
+
+if __name__ == '__main__':
+    main()
