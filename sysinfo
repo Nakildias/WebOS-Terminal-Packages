@@ -1,54 +1,66 @@
 # author: nakildias
 # release_date: 23/08/2025
-# last_updated: 23/08/2025
+# last_updated: 24/08/2025
 # requires_sudo: false
-# version: 1.0.1
+# version: 1.1.0
 # size: 1KB
 
-# sysinfo - A simple system information tool for WebOS
+import sys
+import os
+import json
 
-try:
-    username = user.username
-    is_admin_status = "Administrator" if user.is_admin else "Standard User"
-    user_home = session.get('user_home', f'home/{username}').replace('\\', '/')
+def main():
+    # --- Boilerplate to read context from environment ---
+    context_str = os.environ.get('WEBOS_CONTEXT')
+    if not context_str:
+        print("Error: Script must be run within the WebOS terminal.")
+        sys.exit(1)
+    context = json.loads(context_str)
+    session = context.get('session', {})
+    user_data = context.get('user', {})
+    # --- End Boilerplate ---
 
-    art = [
-        "    _______________",
-        "   /  ________   /|",
-        "  /  /       /  / |",
-        " /__/_______/  /  |",
-        "|          |  /   |",
-        "| WebOS    | /    |",
-        "|          |/     |",
-        "|__________|      |",
-        "|          |_____ /",
-        "|__________|",
-    ]
+    try:
+        username = user_data.get('username', 'unknown')
+        is_admin = user_data.get('is_admin', False)
+        is_admin_status = "Administrator" if is_admin else "Standard User"
+        user_home = session.get('user_home', f'home/{username}').replace('\\', '/')
 
-    info = [
-        "",
-        f"{username} @ WebOS",
-        "-----------------",
-        f"OS: WebOS v1.0",
-        f"Home: /{user_home}",
-        f"Privileges: {is_admin_status}",
-        ""
-    ]
+        art = [
+            "    _______________",
+            "   /  ________   /|",
+            "  /  /        / / |",
+            " /__/_______/  /  |",
+            "|           | /   |",
+            "| WebOS     |/    |",
+            "|           |     |",
+            "|___________|     |",
+            "|           |____ /",
+            "|___________|",
+        ]
 
-    output_lines = []
-    max_lines = max(len(art), len(info))
-    for i in range(max_lines):
-        art_line = art[i] if i < len(art) else " " * 18
-        info_line = info[i] if i < len(info) else ""
-        output_lines.append(f"{art_line}   {info_line}")
+        info = [
+            "",
+            f"{username} @ WebOS",
+            "-----------------",
+            f"OS: WebOS v1.0",
+            f"Home: /{user_home}",
+            f"Privileges: {is_admin_status}",
+            ""
+        ]
 
-    response = {
-        'output': "\n".join(output_lines),
-        'is_error': False
-    }
+        output_lines = []
+        max_lines = max(len(art), len(info))
+        for i in range(max_lines):
+            art_line = art[i] if i < len(art) else " " * 18
+            info_line = info[i] if i < len(info) else ""
+            output_lines.append(f"{art_line}    {info_line}")
 
-except Exception as e:
-    response = {
-        'output': f"sysinfo: an unexpected error occurred: {e}",
-        'is_error': True
-    }
+        print("\n".join(output_lines))
+
+    except Exception as e:
+        print(f"sysinfo: an unexpected error occurred: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
