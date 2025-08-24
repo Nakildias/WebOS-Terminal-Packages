@@ -1,24 +1,33 @@
 # author: nakildias
 # release_date: 23/08/2025
-# last_updated: 23/08/2025
+# last_updated: 24/08/2025
 # requires_sudo: false
-# version: 1.0.0
+# version: 1.1.0
 # size: 2KB
 
-# This is a special streamable package. It uses 'yield' to send
-# real-time output back to the terminal.
+import sys
+import os
+import json
 import time
 import requests
 import socket
 
-def run_ping():
-    """Generator function that performs the ping logic and yields output."""
+def main():
+    # --- Boilerplate to read context from environment ---
+    context_str = os.environ.get('WEBOS_CONTEXT')
+    if not context_str:
+        print("Error: Script must be run within the WebOS terminal.")
+        sys.exit(1)
+    context = json.loads(context_str)
+    args = context.get('args', [])
+    # --- End Boilerplate ---
+
     # --- Argument Parsing ---
     hostname = None
-    count = float('inf') # Default to infinite pings
+    count = float('inf')  # Default to infinite pings
 
     if not args or 'help' in args or '-h' in args:
-        yield "usage: ping [-c count] hostname\n"
+        print("usage: ping [-c count] hostname")
         return
 
     if '-c' in args:
@@ -29,21 +38,21 @@ def run_ping():
             args.pop(c_index)
             args.pop(c_index)
         except (ValueError, IndexError):
-            yield "ping: invalid count specified with -c\n"
+            print("ping: invalid count specified with -c")
             return
 
     if not args:
-        yield "ping: hostname required\n"
+        print("ping: hostname required")
         return
-    
+
     hostname = args[0]
 
     # --- Main Ping Logic ---
     try:
         ip_address = socket.gethostbyname(hostname)
-        yield f"Pinging {hostname} [{ip_address}] with 32 bytes of data:\n"
+        print(f"Pinging {hostname} [{ip_address}] with 32 bytes of data:")
     except socket.gaierror:
-        yield f"ping: could not resolve host: {hostname}\n"
+        print(f"ping: could not resolve host: {hostname}")
         return
 
     pings_sent = 0
@@ -51,28 +60,24 @@ def run_ping():
         while pings_sent < count:
             start_time = time.time()
             try:
-                # We simulate a ping by making a HEAD request, which is lightweight.
-                # We'll allow redirects and set a timeout.
+                # We simulate a ping by making a HEAD request.
                 requests.head(f"http://{hostname}", timeout=5, allow_redirects=True)
                 end_time = time.time()
                 elapsed_ms = (end_time - start_time) * 1000
-                yield f"Reply from {ip_address}: time={elapsed_ms:.2f}ms\n"
+                print(f"Reply from {ip_address}: time={elapsed_ms:.2f}ms")
             except requests.exceptions.RequestException:
-                yield f"Request timed out.\n"
-            
+                print("Request timed out.")
+
             pings_sent += 1
             if pings_sent < count:
-                time.sleep(1) # Wait 1 second between pings
-    
-    except GeneratorExit:
-        # This block is executed when the client disconnects (e.g., Ctrl+C)
-        # We can perform cleanup here if needed.
-        yield f"\n--- {hostname} ping statistics ---\n"
-        yield f"{pings_sent} packets transmitted.\n"
+                time.sleep(1)  # Wait 1 second between pings
+
+    except KeyboardInterrupt:
+        # This block is executed when the process is terminated (e.g., Ctrl+C)
+        print(f"\n--- {hostname} ping statistics ---")
+        print(f"{pings_sent} packets transmitted.")
     except Exception as e:
-        yield f"An unexpected error occurred: {e}\n"
+        print(f"An unexpected error occurred: {e}")
 
-
-# The main execution part of the script.
-# For streamable packages, we must define a 'stream_response' generator.
-stream_response = run_ping()
+if __name__ == "__main__":
+    main()
