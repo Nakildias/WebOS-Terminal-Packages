@@ -1,8 +1,8 @@
-# author: nakildias
+# author: Jarvis
 # release_date: 24/08/2025
 # last_updated: 24/08/2025
 # requires_sudo: false
-# version: 1.0.0
+# version: 1.2.0
 # size: 2KB
 
 import sys
@@ -31,23 +31,29 @@ def main():
         C_WHITE = '\033[97m'
         C_END = '\033[0m'
 
+        # --- NEW LOGO FROM FILE ---
         logo = [
-            f"{C_BLUE}    _______________   {C_END}",
-            f"{C_BLUE}   /  ________   /|  {C_END}",
-            f"{C_BLUE}  /  /        / / |  {C_END}",
-            f"{C_BLUE} /__/_______/  /  |  {C_END}",
-            f"{C_BLUE}|           | /   |  {C_END}",
-            f"{C_BLUE}|  {C_WHITE}WebOS{C_BLUE}     |/    |  {C_END}",
-            f"{C_BLUE}|           |     |  {C_END}",
-            f"{C_BLUE}|___________|     |  {C_END}",
-            f"{C_BLUE}|           |____ /  {C_END}",
-            f"{C_BLUE}|___________|     {C_END}",
+            f"{C_BLUE}           ██████████           {C_END}",
+            f"{C_BLUE}        ██ ██  █   ██ ██        {C_END}",
+            f"{C_BLUE}      █   █    █    ██  ██      {C_END}",
+            f"{C_BLUE}    ██   █     █     ██   ██    {C_END}",
+            f"{C_BLUE}   ██████████████████████████   {C_END}",
+            f"{C_BLUE}   █    █      █       █    █   {C_END}",
+            f"{C_BLUE}  █     █      █       █     █  {C_END}",
+            f"{C_BLUE}  ████████████████████████████  {C_END}",
+            f"{C_BLUE}  █     █      █       █     █  {C_END}",
+            f"{C_BLUE}   █    █      █       █    █   {C_END}",
+            f"{C_BLUE}   ██████████████████████████   {C_END}",
+            f"{C_BLUE}    ██   █     █      █   ██    {C_END}",
+            f"{C_BLUE}      ██  █    █     █   █      {C_END}",
+            f"{C_BLUE}        ██ ██  █   ██ ██        {C_END}",
+            f"{C_BLUE}            ████████            {C_END}",
         ]
 
         info = [
             f"{C_BLUE}{username}{C_WHITE}@{C_BLUE}WebOS{C_END}",
             "-----------------",
-            f"{C_BLUE}OS:{C_END} WebOS v1.0",
+            f"{C_BLUE}OS:{C_END} WebOS v1.2",
             f"{C_BLUE}Host:{C_END} Local Flask Server",
             f"{C_BLUE}Uptime:{C_END} since last reboot",
             f"{C_BLUE}Shell:{C_END} WebTerm",
@@ -58,7 +64,8 @@ def main():
         # Combine logo and info line by line
         max_lines = max(len(logo), len(info))
         for i in range(max_lines):
-            logo_line = logo[i] if i < len(logo) else " " * 22
+            # Adjust spacing for the new logo's width
+            logo_line = logo[i] if i < len(logo) else " " * 36
             info_line = info[i] if i < len(info) else ""
             print(f"{logo_line}  {info_line}")
 
