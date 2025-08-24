@@ -2,7 +2,7 @@
 # release_date: 24/08/2025
 # last_updated: 24/08/2025
 # requires_sudo: false
-# version: 1.3.0
+# version: 1.3.1
 # size: 3KB
 
 import sys
@@ -19,15 +19,10 @@ except ImportError:
     psutil = None  # uptime won't be available without psutil
 
 
-# --- ANSI Colors ---
+# --- ANSI Colors (old system, unchanged) ---
 C_BLUE = '\033[94m'
 C_WHITE = '\033[97m'
 C_END = '\033[0m'
-
-def colorize(text, color):
-    if not sys.stdout.isatty() or os.environ.get("NO_COLOR"):
-        return text
-    return f"{color}{text}{C_END}"
 
 
 # --- Info Fetching ---
@@ -41,14 +36,14 @@ def get_system_info(username: str, user_home: str, is_admin: bool) -> list[str]:
         uptime = str(timedelta(seconds=seconds))
 
     info = [
-        f"{colorize(username, C_BLUE)}{colorize('@WebOS', C_WHITE)}",
+        f"{C_BLUE}{username}{C_WHITE}@{C_BLUE}WebOS{C_END}",
         "-----------------",
-        f"{colorize('OS:', C_BLUE)} WebOS v1.3",
-        f"{colorize('Host:', C_BLUE)} {platform.node()}",
-        f"{colorize('Uptime:', C_BLUE)} {uptime}",
-        f"{colorize('Shell:', C_BLUE)} {os.environ.get('SHELL', 'WebTerm')}",
-        f"{colorize('Home:', C_BLUE)} /{user_home}",
-        f"{colorize('Privileges:', C_BLUE)} {privileges}",
+        f"{C_BLUE}OS:{C_END} WebOS v1.3",
+        f"{C_BLUE}Host:{C_END} {platform.node()}",
+        f"{C_BLUE}Uptime:{C_END} {uptime}",
+        f"{C_BLUE}Shell:{C_END} {os.environ.get('SHELL', 'WebTerm')}",
+        f"{C_BLUE}Home:{C_END} /{user_home}",
+        f"{C_BLUE}Privileges:{C_END} {privileges}",
     ]
     return info
 
@@ -56,21 +51,21 @@ def get_system_info(username: str, user_home: str, is_admin: bool) -> list[str]:
 # --- ASCII Logo ---
 def load_logo() -> list[str]:
     return [
-        colorize("           ==========           ", C_BLUE),
-        colorize("        == ==  =   == ==        ", C_BLUE),
-        colorize("      =   =    =    ==  ==      ", C_BLUE),
-        colorize("    ==   =     =     ==   ==    ", C_BLUE),
-        colorize("   ==========================   ", C_BLUE),
-        colorize("   =    =      =       =    =   ", C_BLUE),
-        colorize("  =     =      =       =     =  ", C_BLUE),
-        colorize("  ============================  ", C_BLUE),
-        colorize("  =     =      =       =     =  ", C_BLUE),
-        colorize("   =    =      =       =    =   ", C_BLUE),
-        colorize("   ==========================   ", C_BLUE),
-        colorize("    ==   =     =      =   ==    ", C_BLUE),
-        colorize("      ==  =    =     =   =      ", C_BLUE),
-        colorize("        == ==  =   == ==        ", C_BLUE),
-        colorize("            ========            ", C_BLUE),
+        f"{C_BLUE}           ==========           {C_END}",
+        f"{C_BLUE}        == ==  =   == ==        {C_END}",
+        f"{C_BLUE}      =   =    =    ==  ==      {C_END}",
+        f"{C_BLUE}    ==   =     =     ==   ==    {C_END}",
+        f"{C_BLUE}   ==========================   {C_END}",
+        f"{C_BLUE}   =    =      =       =    =   {C_END}",
+        f"{C_BLUE}  =     =      =       =     =  {C_END}",
+        f"{C_BLUE}  ============================  {C_END}",
+        f"{C_BLUE}  =     =      =       =     =  {C_END}",
+        f"{C_BLUE}   =    =      =       =    =   {C_END}",
+        f"{C_BLUE}   ==========================   {C_END}",
+        f"{C_BLUE}    ==   =     =      =   ==    {C_END}",
+        f"{C_BLUE}      ==  =    =     =   =      {C_END}",
+        f"{C_BLUE}        == ==  =   == ==        {C_END}",
+        f"{C_BLUE}            ========            {C_END}",
     ]
 
 
