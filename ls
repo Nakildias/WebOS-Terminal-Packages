@@ -1,9 +1,9 @@
 # author: nakildias
+# release_date: 24/08/2025
+# last_updated: 24/08/2025
+# requires_sudo: false
 # version: 1.0.0
-# requires_sudo: False
-# size: 2KB
-# release_date: 2024-06-25
-# last_updated: 2024-06-25
+# size: 1KB
 
 import os
 import json
