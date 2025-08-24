@@ -5,6 +5,8 @@
 # release_date: 2024-06-25
 # last_updated: 2024-06-25
 
+# This is using a buffer file because I couldn't get it to animate the progress without it, I spent 5 hours on this piece of shit
+
 import os
 import json
 import sys
