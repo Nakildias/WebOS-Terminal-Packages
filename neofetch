@@ -2,7 +2,7 @@
 # release_date: 24/08/2025
 # last_updated: 24/08/2025
 # requires_sudo: false
-# version: 1.2.0
+# version: 1.2.1
 # size: 2KB
 
 import sys
@@ -33,21 +33,21 @@ def main():
 
         # --- NEW LOGO FROM FILE ---
         logo = [
-            f"{C_BLUE}           ██████████           {C_END}",
-            f"{C_BLUE}        ██ ██  █   ██ ██        {C_END}",
-            f"{C_BLUE}      █   █    █    ██  ██      {C_END}",
-            f"{C_BLUE}    ██   █     █     ██   ██    {C_END}",
-            f"{C_BLUE}   ██████████████████████████   {C_END}",
-            f"{C_BLUE}   █    █      █       █    █   {C_END}",
-            f"{C_BLUE}  █     █      █       █     █  {C_END}",
-            f"{C_BLUE}  ████████████████████████████  {C_END}",
-            f"{C_BLUE}  █     █      █       █     █  {C_END}",
-            f"{C_BLUE}   █    █      █       █    █   {C_END}",
-            f"{C_BLUE}   ██████████████████████████   {C_END}",
-            f"{C_BLUE}    ██   █     █      █   ██    {C_END}",
-            f"{C_BLUE}      ██  █    █     █   █      {C_END}",
-            f"{C_BLUE}        ██ ██  █   ██ ██        {C_END}",
-            f"{C_BLUE}            ████████            {C_END}",
+            f"{C_BLUE}           ==========           {C_END}",
+            f"{C_BLUE}        == ==  =   == ==        {C_END}",
+            f"{C_BLUE}      =   =    =    ==  ==      {C_END}",
+            f"{C_BLUE}    ==   =     =     ==   ==    {C_END}",
+            f"{C_BLUE}   ==========================   {C_END}",
+            f"{C_BLUE}   =    =      =       =    =   {C_END}",
+            f"{C_BLUE}  =     =      =       =     =  {C_END}",
+            f"{C_BLUE}  ============================  {C_END}",
+            f"{C_BLUE}  =     =      =       =     =  {C_END}",
+            f"{C_BLUE}   =    =      =       =    =   {C_END}",
+            f"{C_BLUE}   ==========================   {C_END}",
+            f"{C_BLUE}    ==   =     =      =   ==    {C_END}",
+            f"{C_BLUE}      ==  =    =     =   =      {C_END}",
+            f"{C_BLUE}        == ==  =   == ==        {C_END}",
+            f"{C_BLUE}            ========            {C_END}",
         ]
 
         info = [
