@@ -1,0 +1,78 @@
+# author: nakildias
+# release_date: 23/08/2025
+# last_updated: 23/08/2025
+# requires_sudo: false
+# version: 1.0.0
+# size: 2KB
+
+# This is a special streamable package. It uses 'yield' to send
+# real-time output back to the terminal.
+import time
+import requests
+import socket
+
+def run_ping():
+    """Generator function that performs the ping logic and yields output."""
+    # --- Argument Parsing ---
+    hostname = None
+    count = float('inf') # Default to infinite pings
+
+    if not args or 'help' in args or '-h' in args:
+        yield "usage: ping [-c count] hostname\n"
+        return
+
+    if '-c' in args:
+        try:
+            c_index = args.index('-c')
+            count = int(args[c_index + 1])
+            # Remove the '-c' and its value from args
+            args.pop(c_index)
+            args.pop(c_index)
+        except (ValueError, IndexError):
+            yield "ping: invalid count specified with -c\n"
+            return
+
+    if not args:
+        yield "ping: hostname required\n"
+        return
+    
+    hostname = args[0]
+
+    # --- Main Ping Logic ---
+    try:
+        ip_address = socket.gethostbyname(hostname)
+        yield f"Pinging {hostname} [{ip_address}] with 32 bytes of data:\n"
+    except socket.gaierror:
+        yield f"ping: could not resolve host: {hostname}\n"
+        return
+
+    pings_sent = 0
+    try:
+        while pings_sent < count:
+            start_time = time.time()
+            try:
+                # We simulate a ping by making a HEAD request, which is lightweight.
+                # We'll allow redirects and set a timeout.
+                requests.head(f"http://{hostname}", timeout=5, allow_redirects=True)
+                end_time = time.time()
+                elapsed_ms = (end_time - start_time) * 1000
+                yield f"Reply from {ip_address}: time={elapsed_ms:.2f}ms\n"
+            except requests.exceptions.RequestException:
+                yield f"Request timed out.\n"
+            
+            pings_sent += 1
+            if pings_sent < count:
+                time.sleep(1) # Wait 1 second between pings
+    
+    except GeneratorExit:
+        # This block is executed when the client disconnects (e.g., Ctrl+C)
+        # We can perform cleanup here if needed.
+        yield f"\n--- {hostname} ping statistics ---\n"
+        yield f"{pings_sent} packets transmitted.\n"
+    except Exception as e:
+        yield f"An unexpected error occurred: {e}\n"
+
+
+# The main execution part of the script.
+# For streamable packages, we must define a 'stream_response' generator.
+stream_response = run_ping()
