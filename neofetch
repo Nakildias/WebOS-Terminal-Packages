@@ -1,0 +1,70 @@
+# author: nakildias
+# release_date: 24/08/2025
+# last_updated: 24/08/2025
+# requires_sudo: false
+# version: 1.0.0
+# size: 2KB
+
+import sys
+import os
+import json
+
+def main():
+    # --- Boilerplate to read context from environment ---
+    context_str = os.environ.get('WEBOS_CONTEXT')
+    if not context_str:
+        print("Error: Script must be run within the WebOS terminal.")
+        sys.exit(1)
+    context = json.loads(context_str)
+    session = context.get('session', {})
+    user_data = context.get('user', {})
+    # --- End Boilerplate ---
+
+    try:
+        username = user_data.get('username', 'guest')
+        is_admin = user_data.get('is_admin', False)
+        privileges = "Admin" if is_admin else "User"
+        user_home = session.get('user_home', f'home/{username}').replace('\\', '/')
+
+        # Simple color codes
+        C_BLUE = '\033[94m'
+        C_WHITE = '\033[97m'
+        C_END = '\033[0m'
+
+        logo = [
+            f"{C_BLUE}    _______________   {C_END}",
+            f"{C_BLUE}   /  ________   /|  {C_END}",
+            f"{C_BLUE}  /  /        / / |  {C_END}",
+            f"{C_BLUE} /__/_______/  /  |  {C_END}",
+            f"{C_BLUE}|           | /   |  {C_END}",
+            f"{C_BLUE}|  {C_WHITE}WebOS{C_BLUE}     |/    |  {C_END}",
+            f"{C_BLUE}|           |     |  {C_END}",
+            f"{C_BLUE}|___________|     |  {C_END}",
+            f"{C_BLUE}|           |____ /  {C_END}",
+            f"{C_BLUE}|___________|     {C_END}",
+        ]
+
+        info = [
+            f"{C_BLUE}{username}{C_WHITE}@{C_BLUE}WebOS{C_END}",
+            "-----------------",
+            f"{C_BLUE}OS:{C_END} WebOS v1.0",
+            f"{C_BLUE}Host:{C_END} Local Flask Server",
+            f"{C_BLUE}Uptime:{C_END} since last reboot",
+            f"{C_BLUE}Shell:{C_END} WebTerm",
+            f"{C_BLUE}Home:{C_END} /{user_home}",
+            f"{C_BLUE}Privileges:{C_END} {privileges}",
+        ]
+
+        # Combine logo and info line by line
+        max_lines = max(len(logo), len(info))
+        for i in range(max_lines):
+            logo_line = logo[i] if i < len(logo) else " " * 22
+            info_line = info[i] if i < len(info) else ""
+            print(f"{logo_line}  {info_line}")
+
+    except Exception as e:
+        print(f"neofetch: an unexpected error occurred: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
